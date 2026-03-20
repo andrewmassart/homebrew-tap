@@ -1,0 +1,64 @@
+name: Update Cask
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. 0.1.1)"
+        required: true
+        type: string
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download DMGs and compute SHAs
+        run: |
+          ARM_URL="https://github.com/andrewmassart/prompt-book/releases/download/v${{ inputs.version }}/prompt-book_${{ inputs.version }}_aarch64.dmg"
+          X64_URL="https://github.com/andrewmassart/prompt-book/releases/download/v${{ inputs.version }}/prompt-book_${{ inputs.version }}_x64.dmg"
+
+          ARM_SHA=$(curl -sL "$ARM_URL" | sha256sum | awk '{print $1}')
+          X64_SHA=$(curl -sL "$X64_URL" | sha256sum | awk '{print $1}')
+
+          echo "ARM_SHA=$ARM_SHA" >> "$GITHUB_ENV"
+          echo "X64_SHA=$X64_SHA" >> "$GITHUB_ENV"
+
+      - name: Update cask file
+        run: |
+          cat > Casks/prompt-book.rb << 'CASK'
+          cask "prompt-book" do
+            version "VERSION_PLACEHOLDER"
+
+            on_arm do
+              sha256 "ARM_SHA_PLACEHOLDER"
+              url "https://github.com/andrewmassart/prompt-book/releases/download/v#{version}/prompt-book_#{version}_aarch64.dmg"
+            end
+
+            on_intel do
+              sha256 "X64_SHA_PLACEHOLDER"
+              url "https://github.com/andrewmassart/prompt-book/releases/download/v#{version}/prompt-book_#{version}_x64.dmg"
+            end
+
+            name "Prompt Book"
+            desc "Local viewer for Claude Code and Copilot CLI session transcripts"
+            homepage "https://github.com/andrewmassart/prompt-book"
+
+            app "prompt-book.app"
+          end
+          CASK
+
+          sed -i "s/VERSION_PLACEHOLDER/${{ inputs.version }}/" Casks/prompt-book.rb
+          sed -i "s/ARM_SHA_PLACEHOLDER/$ARM_SHA/" Casks/prompt-book.rb
+          sed -i "s/X64_SHA_PLACEHOLDER/$X64_SHA/" Casks/prompt-book.rb
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/prompt-book.rb
+          git commit -m "Update prompt-book to ${{ inputs.version }}"
+          git push
