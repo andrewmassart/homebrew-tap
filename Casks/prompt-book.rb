@@ -1,13 +1,13 @@
 cask "prompt-book" do
-  version "0.2.0"
+  version "0.3.0"
 
   on_arm do
-    sha256 "98a4d7c5fc71c0943e6320cb512dadf5259919edbb3d5e117c3c3399c387804c"
+    sha256 "f67bed9a83159b3498bf667321bdc8c73d6c73c6b567b61341b7557f6b853701"
     url "https://github.com/andrewmassart/prompt-book/releases/download/v#{version}/prompt-book_#{version}_aarch64.dmg"
   end
 
   on_intel do
-    sha256 "bd42e8107b949cf3ee4a698e438152d2191f9da4aae0e6dd8c5e5d1134a1aa96"
+    sha256 "0d52f524c2e146624228f4be3fcfff7a5398613f16c60742be232bc5035958b9"
     url "https://github.com/andrewmassart/prompt-book/releases/download/v#{version}/prompt-book_#{version}_x64.dmg"
   end
 
