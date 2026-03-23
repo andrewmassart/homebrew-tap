@@ -18,8 +18,8 @@ jobs:
 
       - name: Download DMGs and compute SHAs
         run: |
-          ARM_URL="https://github.com/andrewmassart/prompt-book/releases/download/v${{ inputs.version }}/prompt-book_${{ inputs.version }}_aarch64.dmg"
-          X64_URL="https://github.com/andrewmassart/prompt-book/releases/download/v${{ inputs.version }}/prompt-book_${{ inputs.version }}_x64.dmg"
+          ARM_URL="https://github.com/andrewmassart/prompt-book/releases/download/v${{ inputs.version }}/Prompt.Book_${{ inputs.version }}_aarch64.dmg"
+          X64_URL="https://github.com/andrewmassart/prompt-book/releases/download/v${{ inputs.version }}/Prompt.Book_${{ inputs.version }}_x64.dmg"
 
           ARM_SHA=$(curl -sL "$ARM_URL" | sha256sum | awk '{print $1}')
           X64_SHA=$(curl -sL "$X64_URL" | sha256sum | awk '{print $1}')
@@ -35,19 +35,19 @@ jobs:
 
             on_arm do
               sha256 "ARM_SHA_PLACEHOLDER"
-              url "https://github.com/andrewmassart/prompt-book/releases/download/v#{version}/prompt-book_#{version}_aarch64.dmg"
+              url "https://github.com/andrewmassart/prompt-book/releases/download/v#{version}/Prompt.Book_#{version}_aarch64.dmg"
             end
 
             on_intel do
               sha256 "X64_SHA_PLACEHOLDER"
-              url "https://github.com/andrewmassart/prompt-book/releases/download/v#{version}/prompt-book_#{version}_x64.dmg"
+              url "https://github.com/andrewmassart/prompt-book/releases/download/v#{version}/Prompt.Book_#{version}_x64.dmg"
             end
 
             name "Prompt Book"
             desc "Local viewer for Claude Code and Copilot CLI session transcripts"
             homepage "https://github.com/andrewmassart/prompt-book"
 
-            app "prompt-book.app"
+            app "Prompt Book.app"
           end
           CASK
 
